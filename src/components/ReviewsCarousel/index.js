@@ -1,43 +1,77 @@
-import {useState} from 'react'
+import {Component} from 'react'
+import Profile from '../Profile'
 import './index.css'
 
-const ReviewsCarousel = props => {
-  const {reviewsList} = props
+class ReviewsCarousel extends Component {
+  state = {id: 0}
 
-  const [count, setCount] = useState(0)
+  moveBack = () => {
+    const {reviewsList} = this.props
+    const count = reviewsList.length
+    this.setState(prevState => {
+      if (prevState.id === 0) {
+        return {id: prevState.id}
+      }
+      return {id: prevState.id - 1}
+    })
+  }
 
-  const rightArrow = () => {
-    setCount(index => (index === reviewsList.length - 1 ? index : count + 1))
+  // if (prevState.id === 0) {
+  //   return {id: count - 1}
+  // }
+
+  // if (prevState.id === count - 1) {
+  //   return {id: 0}
+  // }
+
+  moveFront = () => {
+    const {reviewsList} = this.props
+    const count = reviewsList.length
+    this.setState(prevState => {
+      if (prevState.id === count - 1) {
+        return {id: prevState.id}
+      }
+      return {id: prevState.id + 1}
+    })
   }
-  const leftArrow = () => {
-    setCount(index => (index === 0 ? index : count - 1))
-  }
-  const currentReview = reviewsList[count]
-  return (
-    <div className="review-container">
-      <h1 className="review-heading">Reviews</h1>
-      <div className="content-container">
-        <button type="button" onClick={leftArrow} className="change-btn">
-          <img
-            src="https://assets.ccbp.in/frontend/react-js/left-arrow-img.png"
-            alt="left arrow"
-          />
-        </button>
-        <div className="desc-container">
-          <img src={currentReview.imgUrl} alt={reviewsList.username} />
-          <p className="review-name">{currentReview.username}</p>
-          <p className="review-company">{currentReview.companyName}</p>
-          <p className="review-company">{currentReview.description}</p>
+
+  render() {
+    const {id} = this.state
+    const {reviewsList} = this.props
+    const [result] = reviewsList.filter((item, ind) => ind === id)
+    return (
+      <div className="container">
+        <div className="wrapper">
+          <h1>Reviews</h1>
+          <div className="wrapper2">
+            <button
+              onClick={this.moveBack}
+              data-testid="leftArrow"
+              className="awrap"
+            >
+              <img
+                className="arrow"
+                alt="left arrow"
+                src="https://assets.ccbp.in/frontend/react-js/left-arrow-img.png "
+              />
+            </button>
+            <Profile {...result} />
+            <button
+              onClick={this.moveFront}
+              data-testid="rightArrow"
+              className="awrap"
+            >
+              <img
+                className="arrow"
+                alt="right arrow"
+                src="https://assets.ccbp.in/frontend/react-js/right-arrow-img.png"
+              />
+            </button>
+          </div>
         </div>
-        <button type="button" onClick={rightArrow} className="change-btn">
-          <img
-            src="https://assets.ccbp.in/frontend/react-js/right-arrow-img.png"
-            alt="right arrow"
-          />
-        </button>
       </div>
-    </div>
-  )
+    )
+  }
 }
 
 export default ReviewsCarousel
